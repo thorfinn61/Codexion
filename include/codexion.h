@@ -80,4 +80,7 @@ typedef struct s_sim
 	pthread_t		monitor;
 }	t_sim;
 
+int	safe_atol(const char *s, long *out);
+int	parse_args(int ac, char **av, t_config *cfg);
+
 #endif

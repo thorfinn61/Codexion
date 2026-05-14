@@ -7,7 +7,9 @@ INCLUDES	= -I include
 SRC_DIR		= src
 OBJ_DIR		= obj
 
-SRCS		= main.c
+SRCS		= main.c \
+			  parse.c \
+			  utils_atoi.c
 
 OBJS		= $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
