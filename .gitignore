@@ -1,0 +1,8 @@
+obj/
+codexion
+*.o
+*.dSYM/
+.vscode/
+.idea/
+*.swp
+.DS_Store
