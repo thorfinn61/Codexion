@@ -9,7 +9,9 @@ OBJ_DIR		= obj
 
 SRCS		= main.c \
 			  parse.c \
-			  utils_atoi.c
+			  utils.c \
+			  init.c \
+			  cleanup.c
 
 OBJS		= $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
