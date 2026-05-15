@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                        :+:      :+:    :+:   */
+/*                                                  +:+ +:+         +:+      */
+/*   By: elsahin <elsahin@student.42.fr>        +#+  +:+       +#+         */
+/*                                              +#+#+#+#+#+   +#+            */
+/*   Created: 2026/05/14 12:00:00 by elsahin          #+#    #+#            */
+/*   Updated: 2026/05/15 12:00:00 by elsahin         ###   ########.fr      */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 # define CODEXION_H
 
@@ -44,7 +56,7 @@ typedef struct s_pqueue
 	int			scheduler;
 }	t_pqueue;
 
-struct s_sim;
+struct	s_sim;
 
 typedef struct s_dongle
 {
@@ -82,6 +94,17 @@ typedef struct s_sim
 
 int		safe_atol(const char *s, long *out);
 int		parse_args(int ac, char **av, t_config *cfg);
+
+int		has_priority(t_request *a, t_request *b, int scheduler);
+void	swap_req(t_request *a, t_request *b);
+void	heapify_up(t_pqueue *pq, int i);
+void	heapify_down(t_pqueue *pq, int i);
+
+int		pq_init(t_pqueue *pq, int capacity, int scheduler);
+void	pq_destroy(t_pqueue *pq);
+int		pq_push(t_pqueue *pq, t_request req);
+int		pq_pop(t_pqueue *pq, t_request *out);
+int		pq_peek(t_pqueue *pq, t_request *out);
 
 int		sim_init(t_sim *sim);
 int		sim_start(t_sim *sim);

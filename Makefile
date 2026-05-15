@@ -10,6 +10,8 @@ OBJ_DIR		= obj
 SRCS		= main.c \
 			  parse.c \
 			  utils.c \
+			  pqueue.c \
+			  pqueue_utils.c \
 			  init.c \
 			  cleanup.c
 
