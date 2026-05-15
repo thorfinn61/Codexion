@@ -95,6 +95,10 @@ typedef struct s_sim
 int		safe_atol(const char *s, long *out);
 int		parse_args(int ac, char **av, t_config *cfg);
 
+long	get_time_ms(void);
+void	precise_sleep_ms(long ms);
+void	log_state(t_sim *sim, int coder_id, const char *state);
+
 int		has_priority(t_request *a, t_request *b, int scheduler);
 void	swap_req(t_request *a, t_request *b);
 void	heapify_up(t_pqueue *pq, int i);

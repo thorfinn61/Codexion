@@ -4,18 +4,19 @@ CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -pthread
 INCLUDES	= -I include
 
-SRC_DIR		= src
 OBJ_DIR		= obj
 
-SRCS		= main.c \
-			  parse.c \
-			  utils.c \
-			  pqueue.c \
-			  pqueue_utils.c \
-			  init.c \
-			  cleanup.c
+SRCS		= src/main.c \
+			  src/parse.c \
+			  src/init.c \
+			  src/cleanup.c \
+			  src/log.c \
+			  src/utils/utils.c \
+			  src/utils/utils_time.c \
+			  src/pqueue/pqueue.c \
+			  src/pqueue/pqueue_utils.c
 
-OBJS		= $(SRCS:%.c=$(OBJ_DIR)/%.o)
+OBJS		= $(patsubst src/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 HEADERS		= include/codexion.h
 
@@ -26,11 +27,9 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: src/%.c $(HEADERS)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
 
 clean:
 	$(RM) -r $(OBJ_DIR)
