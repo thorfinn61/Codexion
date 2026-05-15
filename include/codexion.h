@@ -110,8 +110,13 @@ int		pq_push(t_pqueue *pq, t_request req);
 int		pq_pop(t_pqueue *pq, t_request *out);
 int		pq_peek(t_pqueue *pq, t_request *out);
 
+int		sim_should_stop(t_sim *sim);
+void	sim_set_stop(t_sim *sim);
 int		sim_init(t_sim *sim);
 int		sim_start(t_sim *sim);
 void	sim_destroy(t_sim *sim);
+
+int		dongle_acquire(t_sim *sim, t_coder *c, int dongle_id);
+void	dongle_release(t_sim *sim, t_coder *c, int dongle_id);
 
 #endif
