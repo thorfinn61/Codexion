@@ -76,3 +76,17 @@ void	dongle_release(t_sim *sim, t_coder *c, int dongle_id)
 	pthread_cond_broadcast(&d->cond);
 	pthread_mutex_unlock(&d->lock);
 }
+
+void	dongles_wake_all(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->cfg.n_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].lock);
+		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].lock);
+		i++;
+	}
+}

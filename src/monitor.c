@@ -50,29 +50,39 @@ static int	monitor_check_done(t_sim *sim)
 	return (1);
 }
 
+static int	monitor_poll(t_sim *sim, long now)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->cfg.n_coders)
+	{
+		if (monitor_check_burnout(sim, &sim->coders[i], now))
+		{
+			dongles_wake_all(sim);
+			return (1);
+		}
+		i++;
+	}
+	if (monitor_check_done(sim))
+	{
+		sim_set_stop(sim);
+		dongles_wake_all(sim);
+		return (1);
+	}
+	return (0);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_sim	*sim;
-	long	now;
-	int		i;
 
 	sim = (t_sim *)arg;
 	while (!sim_should_stop(sim))
 	{
 		usleep(200);
-		now = get_time_ms();
-		i = 0;
-		while (i < sim->cfg.n_coders)
-		{
-			if (monitor_check_burnout(sim, &sim->coders[i], now))
-				return (NULL);
-			i++;
-		}
-		if (monitor_check_done(sim))
-		{
-			sim_set_stop(sim);
+		if (monitor_poll(sim, get_time_ms()))
 			return (NULL);
-		}
 	}
 	return (NULL);
 }
