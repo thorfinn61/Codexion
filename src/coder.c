@@ -51,3 +51,52 @@ void	coder_release_both(t_sim *sim, t_coder *c)
 	if (c->left_dongle != c->right_dongle)
 		dongle_release(sim, c, c->right_dongle);
 }
+
+static int	coder_compile(t_sim *sim, t_coder *c)
+{
+	if (coder_acquire_both(sim, c) != 0)
+		return (-1);
+	pthread_mutex_lock(&c->state_lock);
+	c->last_compile_start = get_time_ms();
+	pthread_mutex_unlock(&c->state_lock);
+	log_state(sim, c->id, STATE_COMPILING);
+	precise_sleep_ms(sim->cfg.t_compile);
+	coder_release_both(sim, c);
+	if (sim_should_stop(sim))
+		return (-1);
+	return (0);
+}
+
+static int	coder_work(t_sim *sim, t_coder *c)
+{
+	log_state(sim, c->id, STATE_DEBUGGING);
+	precise_sleep_ms(sim->cfg.t_debug);
+	if (sim_should_stop(sim))
+		return (-1);
+	log_state(sim, c->id, STATE_REFACTORING);
+	precise_sleep_ms(sim->cfg.t_refactor);
+	pthread_mutex_lock(&c->state_lock);
+	c->compiles_done++;
+	pthread_mutex_unlock(&c->state_lock);
+	if (sim_should_stop(sim))
+		return (-1);
+	if (sim->cfg.n_compiles_required > 0
+		&& c->compiles_done >= sim->cfg.n_compiles_required)
+		return (-1);
+	return (0);
+}
+
+void	*coder_routine(void *arg)
+{
+	t_coder	*c;
+
+	c = (t_coder *)arg;
+	while (1)
+	{
+		if (coder_compile(c->sim, c) != 0)
+			break ;
+		if (coder_work(c->sim, c) != 0)
+			break ;
+	}
+	return (NULL);
+}
