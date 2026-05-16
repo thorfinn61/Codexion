@@ -119,4 +119,7 @@ void	sim_destroy(t_sim *sim);
 int		dongle_acquire(t_sim *sim, t_coder *c, int dongle_id);
 void	dongle_release(t_sim *sim, t_coder *c, int dongle_id);
 
+int		coder_acquire_both(t_sim *sim, t_coder *c);
+void	coder_release_both(t_sim *sim, t_coder *c);
+
 #endif

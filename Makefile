@@ -12,6 +12,7 @@ SRCS		= src/main.c \
 			  src/cleanup.c \
 			  src/log.c \
 			  src/dongle.c \
+			  src/coder.c \
 			  src/utils/utils.c \
 			  src/utils/utils_time.c \
 			  src/pqueue/pqueue.c \
