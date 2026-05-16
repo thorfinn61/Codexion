@@ -119,6 +119,9 @@ void	sim_destroy(t_sim *sim);
 int		dongle_acquire(t_sim *sim, t_coder *c, int dongle_id);
 void	dongle_release(t_sim *sim, t_coder *c, int dongle_id);
 void	dongles_wake_all(t_sim *sim);
+void	build_request(t_sim *sim, t_coder *c, t_request *req);
+int		can_take(t_dongle *d, int coder_id, long now);
+void	wait_for_dongle(t_dongle *d, long now);
 
 int		coder_acquire_both(t_sim *sim, t_coder *c);
 void	coder_release_both(t_sim *sim, t_coder *c);

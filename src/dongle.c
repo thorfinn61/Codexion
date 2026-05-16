@@ -12,32 +12,6 @@
 
 #include "codexion.h"
 
-static void	build_request(t_sim *sim, t_coder *c, t_request *req)
-{
-	req->coder_id = c->id;
-	req->request_time = get_time_ms();
-	pthread_mutex_lock(&c->state_lock);
-	req->deadline = c->last_compile_start + sim->cfg.t_burnout;
-	pthread_mutex_unlock(&c->state_lock);
-}
-
-static int	can_take(t_dongle *d, int coder_id, long now)
-{
-	t_request	head;
-	t_request	popped;
-
-	if (d->holder_id != -1)
-		return (0);
-	if (now < d->available_at_ms)
-		return (0);
-	if (pq_peek(&d->waiters, &head) != 0)
-		return (0);
-	if (head.coder_id != coder_id)
-		return (0);
-	pq_pop(&d->waiters, &popped);
-	return (1);
-}
-
 int	dongle_acquire(t_sim *sim, t_coder *c, int dongle_id)
 {
 	t_dongle	*d;
@@ -56,7 +30,7 @@ int	dongle_acquire(t_sim *sim, t_coder *c, int dongle_id)
 		}
 		if (can_take(d, c->id, get_time_ms()))
 			break ;
-		pthread_cond_wait(&d->cond, &d->lock);
+		wait_for_dongle(d, get_time_ms());
 	}
 	d->holder_id = c->id;
 	pthread_mutex_unlock(&d->lock);

@@ -17,6 +17,12 @@ static int	monitor_check_burnout(t_sim *sim, t_coder *c, long now)
 	long	last;
 
 	pthread_mutex_lock(&c->state_lock);
+	if (sim->cfg.n_compiles_required > 0
+		&& c->compiles_done >= sim->cfg.n_compiles_required)
+	{
+		pthread_mutex_unlock(&c->state_lock);
+		return (0);
+	}
 	last = c->last_compile_start;
 	pthread_mutex_unlock(&c->state_lock);
 	if (last == 0)
