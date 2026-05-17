@@ -18,7 +18,7 @@ int	has_priority(t_request *a, t_request *b, int scheduler)
 	{
 		if (a->deadline != b->deadline)
 			return (a->deadline < b->deadline);
-		return (a->coder_id < b->coder_id);
+		return (a->coder_id > b->coder_id);
 	}
 	if (a->request_time != b->request_time)
 		return (a->request_time < b->request_time);
