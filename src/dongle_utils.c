@@ -14,11 +14,16 @@
 
 void	build_request(t_sim *sim, t_coder *c, t_request *req)
 {
+	long	last;
+
 	req->coder_id = c->id;
 	req->request_time = get_time_ms();
 	pthread_mutex_lock(&c->state_lock);
-	req->deadline = c->last_compile_start + sim->cfg.t_burnout;
+	last = c->last_compile_start;
 	pthread_mutex_unlock(&c->state_lock);
+	if (last == 0)
+		last = sim->start_ms;
+	req->deadline = last + sim->cfg.t_burnout;
 }
 
 int	can_take(t_dongle *d, int coder_id, long now)

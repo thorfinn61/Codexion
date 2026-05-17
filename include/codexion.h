@@ -85,6 +85,7 @@ typedef struct s_sim
 	t_config		cfg;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	int				n_inited;
 	long			start_ms;
 	int				stop_flag;
 	pthread_mutex_t	stop_lock;
@@ -115,6 +116,8 @@ void	sim_set_stop(t_sim *sim);
 int		sim_init(t_sim *sim);
 int		sim_start(t_sim *sim);
 void	sim_destroy(t_sim *sim);
+void	sim_abort_threads(t_sim *sim, int n_created);
+void	sim_join_all(t_sim *sim);
 
 int		dongle_acquire(t_sim *sim, t_coder *c, int dongle_id);
 void	dongle_release(t_sim *sim, t_coder *c, int dongle_id);

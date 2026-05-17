@@ -6,11 +6,23 @@
 /*   By: elsahin <elsahin@student.42.fr>          +#+  +:+       +#+         */
 /*                                              +#+#+#+#+#+   +#+            */
 /*   Created: 2026/05/14 12:00:00 by elsahin           #+#    #+#            */
-/*   Updated: 2026/05/15 12:00:00 by elsahin          ###   ########.fr      */
+/*   Updated: 2026/05/17 12:00:00 by elsahin          ###   ########.fr      */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+static int	dongle_wait_turn(t_sim *sim, t_dongle *d, int coder_id)
+{
+	while (1)
+	{
+		if (sim_should_stop(sim))
+			return (-1);
+		if (can_take(d, coder_id, get_time_ms()))
+			return (0);
+		wait_for_dongle(d, get_time_ms());
+	}
+}
 
 int	dongle_acquire(t_sim *sim, t_coder *c, int dongle_id)
 {
@@ -20,17 +32,15 @@ int	dongle_acquire(t_sim *sim, t_coder *c, int dongle_id)
 	d = &sim->dongles[dongle_id];
 	build_request(sim, c, &req);
 	pthread_mutex_lock(&d->lock);
-	pq_push(&d->waiters, req);
-	while (1)
+	if (pq_push(&d->waiters, req) != 0)
 	{
-		if (sim_should_stop(sim))
-		{
-			pthread_mutex_unlock(&d->lock);
-			return (-1);
-		}
-		if (can_take(d, c->id, get_time_ms()))
-			break ;
-		wait_for_dongle(d, get_time_ms());
+		pthread_mutex_unlock(&d->lock);
+		return (-1);
+	}
+	if (dongle_wait_turn(sim, d, c->id) != 0)
+	{
+		pthread_mutex_unlock(&d->lock);
+		return (-1);
 	}
 	d->holder_id = c->id;
 	pthread_mutex_unlock(&d->lock);
